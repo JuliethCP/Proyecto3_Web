@@ -1,57 +1,20 @@
-/* Estilo para el cuerpo de la página */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  
-  /* Estilo para el contenedor del formulario */
-  .container {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    width: 400px;
-  }
-  
-  /* Estilo para el título del formulario */
-  h1 {
-    font-size: 24px;
-    margin: 0 0 20px;
-  }
-  
-  /* Estilo para etiquetas y campos de entrada */
-  label, input, select {
-    display: block;
-    margin: 10px 0;
-  }
-  
-  input, select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  /* Estilo para botones */
-  button {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    margin: 10px 0;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
+.fixed-right {
+  position: fixed;
+  right: 5%; /* Ajusta la posición horizontal según tus necesidades */
+  top: 50%; /* Lo coloca en el centro vertical de la pantalla */
+  transform: translateY(-50%);
+  text-align: center; /* Centra los botones */
+  padding: 10px;
+  border: 3px solid rgb(0, 0, 0);
+  border-radius: 5px;
+}
+
+h6 {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.form{
+  margin-top: 20px;
+  margin-bottom: 20px;
+}

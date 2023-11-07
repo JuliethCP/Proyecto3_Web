@@ -18,3 +18,88 @@ h6 {
   margin-top: 20px;
   margin-bottom: 20px;
 }
+
+/* FormBuilder.css */
+.form-container {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.question-container {
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.input-group {
+  margin-bottom: 10px;
+}
+
+.input-group input[type="text"], .input-group input[type="number"] {
+  width: calc(100% - 32px);
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.option-input-group input[type="text"] {
+  width: calc(80% - 32px);
+  margin-right: 10px;
+}
+
+.btn-remove-option {
+  margin-top: 10px;
+}
+
+.btn-add-option {
+  margin-top: 10px;
+}
+
+
+/* input pregunta */
+.custom-input {
+  margin-top: 1%;
+  width: calc(50% - 32px);
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* tipo dato texto y numero */
+.custom-data-input {
+  margin-top: 1%;
+  width: calc(50% - 32px);
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* opcion multiple */
+
+.custom-option-container {
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.custom-option-input {
+  width: calc(55% - 32px);
+  margin-top: 1%;
+  margin-bottom: 0.5%;
+  flex: 1;
+  margin-right: 10px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+

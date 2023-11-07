@@ -4,47 +4,11 @@ import "./FormBuilder.css";
 import { v4 as uuidv4 } from "uuid";
 import { Button, Dropdown } from "react-bootstrap";
 
-function TitleForm({ onTitleChange, onQuestionChange }) {
-  const [titleValue, setTitleValue] = useState("");
-  const [questionValue, setQuestionValue] = useState("");
-
-  const handleTitleChange = (e) => {
-    setTitleValue(e.target.value);
-    onTitleChange(e.target.value);
-  };
-
-  const handleDescriptionChange = (e) => {
-    setQuestionValue(e.target.value);
-    onQuestionChange(e.target.value);
-  };
-
-  return (
-    <div className="form">
-      <h2>
-        <input
-          type="text"
-          style={{ outline: "none", background: "transparent" }}
-          value={titleValue}
-          onChange={handleTitleChange}
-          placeholder="Form Title"
-        />
-      </h2>
-      <p>
-        <input
-          type="text"
-          style={{ outline: "none", background: "transparent" }}
-          value={questionValue}
-          onChange={handleDescriptionChange}
-          placeholder="Form Description Here"
-        />
-      </p>
-    </div>
-  );
-}
 
 function FormBuilder() {
   const [questions, setQuestions] = useState([]);
   const [titleValue, setTitleValue] = useState(""); 
+  const [descriptionValue, setDescriptionValue] = useState("");
   const [questionValue, setQuestionValue] = useState(""); 
   const [responseTypeSelected, setResponseTypeSelected] = useState(false);
 
@@ -60,15 +24,13 @@ function FormBuilder() {
   };
 
   const handleTitleChange = (title) => {
-    // Handle title change if needed
+    setTitleValue(title); 
   };
 
-  const handleDescriptionChange = (questionId, question) => {
-    const updatedQuestions = questions.map((q) =>
-      q.id === questionId ? { ...q, question: question } : q
-    );
-    setQuestions(updatedQuestions);
+  const handleDescriptionChange = (description) => {
+    setDescriptionValue(description); // Update the descriptionValue state
   };
+
 
   const handleQuestionChange = (questionId, newQuestion) => {
     const updatedQuestions = questions.map((question) =>
@@ -137,17 +99,17 @@ function FormBuilder() {
               type="text"
               className="form-control"
               value={titleValue}
-              onChange={handleTitleChange}
+             onChange={(e) => handleTitleChange(e.target.value)}
               placeholder="Form Title"
             />
           </div>
           <div className="col-md-12">
-            <p>Form Description Here</p>
+            <h6>Form Description</h6>
             <input
               type="text"
               className="form-control"
-              value={questionValue}
-              onChange={handleDescriptionChange}
+              value={descriptionValue}
+              onChange={(e) => handleDescriptionChange(e.target.value)}
               placeholder="Form Description Here"
             />
           </div>

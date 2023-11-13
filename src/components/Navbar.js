@@ -23,12 +23,12 @@ function Navbar() {
         <div className={`collapse navbar-collapse ${menuOpen ? 'show' : ''}`} id="navbarNav">
           <ul className="navbar-nav mx-auto">
             <li className="nav-item mx-3">
-              <a className="nav-link custom-link" href="#">
+              <a className="nav-link custom-link" href="/formBuilder">
                 Preguntas
               </a>
             </li>
             <li className="nav-item mx-3">
-              <a className="nav-link custom-link" href="#">
+              <a className="nav-link custom-link" href="/showForm/:formId">
                 Respuestas
               </a>
             </li>

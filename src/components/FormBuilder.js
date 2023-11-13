@@ -10,7 +10,6 @@ function FormBuilder() {
   const [questions, setQuestions] = useState([]);
   const [titleValue, setTitleValue] = useState("");
   const [descriptionValue, setDescriptionValue] = useState("");
-  const [questionValue, setQuestionValue] = useState("");
   const [responseTypeSelected, setResponseTypeSelected] = useState(false);
 
   const addQuestion = () => {
@@ -96,18 +95,18 @@ function FormBuilder() {
       const formId = uuidv4();
   
       // Crear un documento en la colección "Form" con los datos del formulario
-      const formDocRef = await addDoc(collection(db, "Form"), {
-        titulo: titleValue, 
+      await addDoc(collection(db, "Form"), {
+        titulo: titleValue,
         descripcion: descriptionValue,
         id: formId,
-        link: "tu_valor_de_link", 
+        link: "tu_valor_de_link",
       });
   
       // Iterar a través de las preguntas y guardarlas en la colección "Preguntas"
       for (const question of questions) {
         const preguntaId = uuidv4(); // Genera un ID único para la pregunta
   
-        const preguntaDocRef = await addDoc(collection(db, "Preguntas"), {
+        await addDoc(collection(db, "Preguntas"), {
           pregunta: question.question,
           id: preguntaId,
         });
@@ -118,7 +117,32 @@ function FormBuilder() {
           idPregunta: preguntaId,
         });
   
-        // Aquí deberías manejar los tipos de respuesta y las respuestas
+        // Guardar el tipo de respuesta en la tabla "TipoTexto" o "TipoNumero" según corresponda
+        if (question.type === "text") {
+          const tipoTextoId = uuidv4(); // Genera un ID único para el tipo de respuesta
+          await addDoc(collection(db, "TipoTexto"), {
+            id: tipoTextoId,
+            dato: question.answer,
+          });
+  
+          // Guardar la relación entre la pregunta y el tipo de respuesta
+          await addDoc(collection(db, "Pregunta_Respuesta"), {
+            idPregunta: preguntaId,
+            idRespuesta: tipoTextoId,
+          });
+        } else if (question.type === "number") {
+          const tipoNumeroId = uuidv4(); // Genera un ID único para el tipo de respuesta
+          await addDoc(collection(db, "TipoNumero"), {
+            id: tipoNumeroId,
+            dato: parseFloat(question.answer), // Convierte la respuesta a número
+          });
+  
+          // Guardar la relación entre la pregunta y el tipo de respuesta
+          await addDoc(collection(db, "Pregunta_Respuesta"), {
+            idPregunta: preguntaId,
+            idRespuesta: tipoNumeroId,
+          });
+        }
       }
   
       console.log("Formulario guardado correctamente en Firestore.");
@@ -128,7 +152,6 @@ function FormBuilder() {
   };
   
   
-
 
   const scanAndSave = () => {
     console.log("Título del Formulario:", titleValue);

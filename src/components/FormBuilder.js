@@ -19,6 +19,9 @@ function FormBuilder() {
       question: "",
       answer: "",
       options: responseTypeSelected === "multiple" ? [""] : [],
+      tableRows: 2,
+      tableColumns: 2,
+      tableData: Array.from({ length: 2 }, () => Array(2).fill("")), // Initialize tableData as a 2D array
     };
     setQuestions([...questions, newQuestion]);
   };
@@ -28,15 +31,12 @@ function FormBuilder() {
   };
 
   const handleDescriptionChange = (description) => {
-    setDescriptionValue(description); // Update the descriptionValue state
+    setDescriptionValue(description);
   };
-
 
   const handleQuestionChange = (questionId, newQuestion) => {
     const updatedQuestions = questions.map((question) =>
-      question.id === questionId
-        ? { ...question, question: newQuestion }
-        : question
+      question.id === questionId ? { ...question, question: newQuestion } : question
     );
     setQuestions(updatedQuestions);
   };
@@ -48,15 +48,33 @@ function FormBuilder() {
     setQuestions(updatedQuestions);
   };
 
+  const handleSelectResponseType = (type) => {
+    setResponseTypeSelected(type);
+  };
+
   const handleOptionChange = (questionId, optionIndex, option) => {
     const updatedQuestions = questions.map((question) =>
       question.id === questionId
         ? {
-          ...question,
-          options: question.options.map((o, index) =>
-            index === optionIndex ? option : o
-          ),
-        }
+            ...question,
+            options: question.options.map((o, index) =>
+              index === optionIndex ? option : o
+            ),
+          }
+        : question
+    );
+    setQuestions(updatedQuestions);
+  };
+
+  const handleRemoveOption = (questionId, optionIndex) => {
+    const updatedQuestions = questions.map((question) =>
+      question.id === questionId
+        ? {
+            ...question,
+            options: question.options.filter(
+              (_, index) => index !== optionIndex
+            ),
+          }
         : question
     );
     setQuestions(updatedQuestions);
@@ -71,87 +89,132 @@ function FormBuilder() {
     setQuestions(updatedQuestions);
   };
 
-  const handleRemoveOption = (questionId, optionIndex) => {
+  const handleTableDataChange = (questionId, newData) => {
+    const updatedQuestions = questions.map((question) =>
+      question.id === questionId ? { ...question, tableData: newData } : question
+    );
+    setQuestions(updatedQuestions);
+  };
+
+  const handleTableRowsChange = (questionId, newTableRows) => {
+    const updatedQuestions = questions.map((question) =>
+      question.id === questionId ? { ...question, tableRows: newTableRows } : question
+    );
+    setQuestions(updatedQuestions);
+  };
+
+  const handleTableColumnsChange = (questionId, newTableColumns) => {
+    const updatedQuestions = questions.map((question) =>
+      question.id === questionId ? { ...question, tableColumns: newTableColumns } : question
+    );
+    setQuestions(updatedQuestions);
+  };
+
+  const handleAddRow = (questionId) => {
     const updatedQuestions = questions.map((question) =>
       question.id === questionId
         ? {
-          ...question,
-          options: question.options.filter(
-            (_, index) => index !== optionIndex
-          ),
-        }
+            ...question,
+            tableRows: question.tableRows + 1,
+            tableData: [
+              ...question.tableData,
+              Array(question.tableColumns).fill(""), // Initialize a new row with empty values
+            ],
+          }
         : question
     );
     setQuestions(updatedQuestions);
   };
 
-  const handleSelectResponseType = (type) => {
-    setResponseTypeSelected(type);
+  const handleAddColumn = (questionId) => {
+    const updatedQuestions = questions.map((question) =>
+      question.id === questionId ? { ...question, tableColumns: question.tableColumns + 1 } : question
+    );
+    setQuestions(updatedQuestions);
+  };
+
+  const handleRemoveRow = (questionId) => {
+    const updatedQuestions = questions.map((question) =>
+      question.id === questionId ? { ...question, tableRows: Math.max(1, question.tableRows - 1) } : question
+    );
+    setQuestions(updatedQuestions);
+  };
+
+  const handleRemoveColumn = (questionId) => {
+    const updatedQuestions = questions.map((question) =>
+      question.id === questionId ? { ...question, tableColumns: Math.max(1, question.tableColumns - 1) } : question
+    );
+    setQuestions(updatedQuestions);
   };
 
   const saveFormData = async () => {
     try {
-      // Genera un ID único para el formulario
       const formId = uuidv4();
-  
-      // Crear un documento en la colección "Form" con los datos del formulario
+
       await addDoc(collection(db, "Form"), {
         titulo: titleValue,
         descripcion: descriptionValue,
         id: formId,
         link: "tu_valor_de_link",
       });
-  
-      // Iterar a través de las preguntas y guardarlas en la colección "Preguntas"
+
       for (const question of questions) {
-        const preguntaId = uuidv4(); // Genera un ID único para la pregunta
-  
+        const preguntaId = uuidv4();
+
         await addDoc(collection(db, "Preguntas"), {
           pregunta: question.question,
           id: preguntaId,
         });
-  
-        // Guardar la relación entre el formulario y la pregunta en "Form_Preguntas"
+
         await addDoc(collection(db, "Form_Preguntas"), {
           idForm: formId,
           idPregunta: preguntaId,
         });
-  
-        // Guardar el tipo de respuesta en la tabla "TipoTexto" o "TipoNumero" según corresponda
+
         if (question.type === "text") {
-          const tipoTextoId = uuidv4(); // Genera un ID único para el tipo de respuesta
+          const tipoTextoId = uuidv4();
           await addDoc(collection(db, "TipoTexto"), {
             id: tipoTextoId,
             dato: question.answer,
           });
-  
-          // Guardar la relación entre la pregunta y el tipo de respuesta
+
           await addDoc(collection(db, "Pregunta_Respuesta"), {
             idPregunta: preguntaId,
             idRespuesta: tipoTextoId,
           });
         } else if (question.type === "number") {
-          const tipoNumeroId = uuidv4(); // Genera un ID único para el tipo de respuesta
+          const tipoNumeroId = uuidv4();
           await addDoc(collection(db, "TipoNumero"), {
             id: tipoNumeroId,
-            dato: parseFloat(question.answer), // Convierte la respuesta a número
+            dato: parseFloat(question.answer),
           });
-  
-          // Guardar la relación entre la pregunta y el tipo de respuesta
+
           await addDoc(collection(db, "Pregunta_Respuesta"), {
             idPregunta: preguntaId,
             idRespuesta: tipoNumeroId,
           });
+        } else if (question.type === "table") {
+          // Iterar a través de las celdas de la tabla y guardarlas en la colección correspondiente
+          for (let i = 0; i < question.tableRows; i++) {
+            for (let j = 0; j < question.tableColumns; j++) {
+              const tableCellId = uuidv4();
+              await addDoc(collection(db, "TablaRespuestas"), {
+                id: tableCellId,
+                idPregunta: preguntaId,
+                row: i + 1,
+                column: j + 1,
+                dato: "", // Aquí debes obtener el dato real de cada celda
+              });
+            }
+          }
         }
       }
-  
+
       console.log("Formulario guardado correctamente en Firestore.");
     } catch (error) {
       console.error("Error al guardar el formulario:", error);
     }
   };
-  
-  
 
   const scanAndSave = () => {
     console.log("Título del Formulario:", titleValue);
@@ -168,6 +231,9 @@ function FormBuilder() {
         question.options.forEach((option, optionIndex) => {
           console.log(`Opción ${optionIndex + 1}: ${option}`);
         });
+      } else if (question.type === "table") {
+        console.log("Número de Filas:", question.tableRows);
+        console.log("Número de Columnas:", question.tableColumns);
       }
     });
   };
@@ -232,6 +298,9 @@ function FormBuilder() {
                 <Dropdown.Item onClick={() => handleSelectResponseType("multiple")}>
                   Multiple Choice
                 </Dropdown.Item>
+                <Dropdown.Item onClick={() => handleSelectResponseType("table")}>
+                  Table
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </div>
@@ -249,7 +318,7 @@ function FormBuilder() {
                   <h4>Text Question</h4>
                   <input
                     type="text"
-                    className="custom-input" // Agrega una clase personalizada
+                    className="custom-input"
                     placeholder="Question"
                     value={question.question}
                     onChange={(e) =>
@@ -274,7 +343,7 @@ function FormBuilder() {
 
                   <input
                     type="text"
-                    className="custom-input" // Agrega una clase personalizada
+                    className="custom-input"
                     placeholder="Question"
                     value={question.question}
                     onChange={(e) =>
@@ -298,7 +367,7 @@ function FormBuilder() {
                   <h4>Multiple Choice Question</h4>
                   <input
                     type="text"
-                    className="custom-input" // Agrega una clase personalizada
+                    className="custom-input"
                     placeholder="Question"
                     value={question.question}
                     onChange={(e) =>
@@ -318,6 +387,8 @@ function FormBuilder() {
                       />
                       <Button
                         variant="outline-danger"
+                        className="btn-block"
+                        style={{ marginRight: '-5px', marginBottom: '5px' }}
                         onClick={() => handleRemoveOption(question.id, index)}
                       >
                         Remove Option
@@ -332,6 +403,83 @@ function FormBuilder() {
                   </Button>
                 </div>
               )}
+
+              {question.type === "table" && (
+              <div>
+                <h4>Table Question</h4>
+                <input
+                  type="text"
+                  className="custom-input-table"
+                  placeholder="Question"
+                  value={question.question}
+                  onChange={(e) =>
+                    handleQuestionChange(question.id, e.target.value)
+                  }
+                />
+                <table className="table">
+                  <tbody>
+                    {[...Array(question.tableRows)].map((_, rowIndex) => (
+                      <tr key={rowIndex}>
+                        {[...Array(question.tableColumns)].map((_, colIndex) => (
+                          <td key={colIndex}>
+                            <input
+                              type="text"
+                              className="custom-table-input"
+                              placeholder={`Row ${rowIndex + 1}, Column ${colIndex + 1}`}
+                              value={question.tableData[rowIndex][colIndex]}
+                              onChange={(e) => {
+                                const newData = question.tableData.map((row, rIndex) =>
+                                  rIndex === rowIndex
+                                    ? row.map((cell, cIndex) =>
+                                        cIndex === colIndex ? e.target.value : cell
+                                      )
+                                    : row
+                                );
+                                handleTableDataChange(question.id, newData);
+                              }}
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div style={{ marginTop: '15px' }}>
+                  <Button
+                    variant="outline-dark"
+                    className="btn-block w-33"
+                    style={{ marginRight: '8px', marginTop: '15px' }}
+                    onClick={() => handleAddRow(question.id)}
+                  >
+                    Add Row
+                  </Button>
+                  <Button
+                    variant="outline-dark"
+                    className="btn-block w-33"
+                    style={{ marginRight: '8px', marginTop: '15px' }}
+                    onClick={() => handleRemoveRow(question.id)}
+                  >
+                    Remove Row
+                  </Button>
+                  <Button
+                    variant="outline-dark"
+                    className="btn-block w-33"
+                    style={{ marginRight: '8px', marginTop: '15px' }}
+                    onClick={() => handleAddColumn(question.id)}
+                  >
+                    Add Column
+                  </Button>
+                  <Button
+                    variant="outline-dark"
+                    className="btn-block w-33"
+                    style={{ marginRight: '8px', marginTop: '15px' }}
+                    onClick={() => handleRemoveColumn(question.id)}
+                  >
+                    Remove Column
+                  </Button>
+                </div>
+              </div>
+            )}
             </div>
           ))}
         </div>

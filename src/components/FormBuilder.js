@@ -26,6 +26,16 @@ function FormBuilder() {
     setQuestions([...questions, newQuestion]);
   };
 
+  const isTitleValid = () => {
+  // Verifica si el título no está vacío o compuesto solo por espacios en blanco
+  return titleValue.trim() !== "";
+};
+
+const isFormValid = () => {
+  // Verifica si hay preguntas y si el título es válido
+  return questions.length > 0 && isTitleValid();
+};
+
   const handleTitleChange = (title) => {
     setTitleValue(title);
   };
@@ -65,6 +75,7 @@ function FormBuilder() {
     );
     setQuestions(updatedQuestions);
   };
+  
 
   const handleRemoveOption = (questionId, optionIndex) => {
     const updatedQuestions = questions.map((question) =>
@@ -145,6 +156,16 @@ function FormBuilder() {
       question.id === questionId ? { ...question, tableColumns: Math.max(1, question.tableColumns - 1) } : question
     );
     setQuestions(updatedQuestions);
+  };
+
+
+  const confirmAndSave = () => {
+    if (isFormValid() && window.confirm("Are you sure you want to save the form?")) {
+      scanAndSave();
+      saveFormData();
+    } else {
+      alert("Please add at least one question and provide a valid title before saving.");
+    }
   };
 
   const saveFormData = async () => {
@@ -240,45 +261,39 @@ function FormBuilder() {
 
   return (
     <div className="form-container">
-      <div className="row mt-3">
-        <div className="col-md-12">
-          <Button variant="primary" onClick={() => {
-            scanAndSave();
-            saveFormData();
-          }}>
-            Guardar
-          </Button>
-        </div>
-      </div>
-
       <div className="container">
         {/* Espacio para el título */}
         <div className="row">
-          <div className="col-md-12">
-            <h2>Form Title</h2>
-            <input
-              type="text"
-              className="form-control"
-              value={titleValue}
-              onChange={(e) => handleTitleChange(e.target.value)}
-              placeholder="Form Title"
-            />
-          </div>
-          <div className="col-md-12">
-            <h6>Form Description</h6>
-            <input
-              type="text"
-              className="form-control"
-              value={descriptionValue}
-              onChange={(e) => handleDescriptionChange(e.target.value)}
-              placeholder="Form Description Here"
-            />
-          </div>
-        </div>
+  <div className="col-md-12">
+    <h2>Form Title</h2>
+    <input
+      type="text"
+      className="form-control"
+      value={titleValue}
+      onChange={(e) => handleTitleChange(e.target.value)}
+      placeholder="Form Title"
+    />
+    {!isTitleValid() && (
+      <div style={{ color: "black", marginBottom: '5px', marginTop: '-5px'}}>
+        Title is required.
+      </div>
+    )}
+  </div>
+  <div className="col-md-12">
+    <h6>Form Description</h6>
+    <input
+      type="text"
+      className="form-control"
+      value={descriptionValue}
+      onChange={(e) => handleDescriptionChange(e.target.value)}
+      placeholder="Form Description Here"
+    />
+  </div>
+</div>
 
         {/* Controles para agregar preguntas */}
         <div className="row mt-3">
-          <div className="col-md-6">
+          <div className="col-md-6 mb-2">
             <Button variant="dark" onClick={addQuestion} disabled={!responseTypeSelected}>
               Add Question
             </Button>
@@ -404,88 +419,90 @@ function FormBuilder() {
                 </div>
               )}
 
+              
               {question.type === "table" && (
-              <div>
-                <h4>Table Question</h4>
+  <div>
+    <h4>Table Question</h4>
+    <input
+      type="text"
+      className="custom-input-table"
+      placeholder="Question"
+      value={question.question}
+      onChange={(e) =>
+        handleQuestionChange(question.id, e.target.value)
+      }
+    />
+    <table className="table">
+      <tbody>
+        {[...Array(question.tableRows)].map((_, rowIndex) => (
+          <tr key={rowIndex}>
+            {[...Array(question.tableColumns)].map((_, colIndex) => (
+              <td key={colIndex}>
                 <input
                   type="text"
-                  className="custom-input-table"
-                  placeholder="Question"
-                  value={question.question}
-                  onChange={(e) =>
-                    handleQuestionChange(question.id, e.target.value)
-                  }
+                  className="custom-table-input"
+                  placeholder={`Row ${rowIndex + 1}, Column ${colIndex + 1}`}
+                  value={question.tableData[rowIndex][colIndex]}
+                  onChange={(e) => {
+                    const newData = question.tableData.map((row, rIndex) =>
+                      rIndex === rowIndex
+                        ? row.map((cell, cIndex) =>
+                            cIndex === colIndex ? e.target.value : cell
+                          )
+                        : row
+                    );
+                    handleTableDataChange(question.id, newData);
+                  }}
                 />
-                <table className="table">
-                  <tbody>
-                    {[...Array(question.tableRows)].map((_, rowIndex) => (
-                      <tr key={rowIndex}>
-                        {[...Array(question.tableColumns)].map((_, colIndex) => (
-                          <td key={colIndex}>
-                            <input
-                              type="text"
-                              className="custom-table-input"
-                              placeholder={`Row ${rowIndex + 1}, Column ${colIndex + 1}`}
-                              value={question.tableData[rowIndex][colIndex]}
-                              onChange={(e) => {
-                                const newData = question.tableData.map((row, rIndex) =>
-                                  rIndex === rowIndex
-                                    ? row.map((cell, cIndex) =>
-                                        cIndex === colIndex ? e.target.value : cell
-                                      )
-                                    : row
-                                );
-                                handleTableDataChange(question.id, newData);
-                              }}
-                            />
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <div style={{ marginTop: '15px' }}>
-                  <Button
-                    variant="outline-dark"
-                    className="btn-block w-33"
-                    style={{ marginRight: '8px', marginTop: '15px' }}
-                    onClick={() => handleAddRow(question.id)}
-                  >
-                    Add Row
-                  </Button>
-                  <Button
-                    variant="outline-dark"
-                    className="btn-block w-33"
-                    style={{ marginRight: '8px', marginTop: '15px' }}
-                    onClick={() => handleRemoveRow(question.id)}
-                  >
-                    Remove Row
-                  </Button>
-                  <Button
-                    variant="outline-dark"
-                    className="btn-block w-33"
-                    style={{ marginRight: '8px', marginTop: '15px' }}
-                    onClick={() => handleAddColumn(question.id)}
-                  >
-                    Add Column
-                  </Button>
-                  <Button
-                    variant="outline-dark"
-                    className="btn-block w-33"
-                    style={{ marginRight: '8px', marginTop: '15px' }}
-                    onClick={() => handleRemoveColumn(question.id)}
-                  >
-                    Remove Column
-                  </Button>
-                </div>
-              </div>
-            )}
+              </td>
+            ))}
+            <td>
+              <Button
+                variant="outline-danger"
+                onClick={() => handleRemoveColumn(question.id)}
+              >
+                Remove Column
+              </Button>
+            </td>
+          </tr>
+        ))}
+        <tr>
+          <td>
+            <Button
+              variant="outline-dark"
+              onClick={() => handleAddRow(question.id)}
+            >
+              Add Row
+            </Button>
+          </td>
+          <td colSpan={question.tableColumns}>
+            <Button
+              variant="outline-dark"
+              onClick={() => handleAddColumn(question.id)}
+            >
+              Add Column
+            </Button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+)
+              }
             </div>
           ))}
+        </div>
+
+        {/* Botón para guardar el formulario */}
+        <div className="row mt-3">
+          <div className="col-md-12">
+            <Button variant="dark" onClick={confirmAndSave}>
+              Save Form
+            </Button>
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
 export default FormBuilder;

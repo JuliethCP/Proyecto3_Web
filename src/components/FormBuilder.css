@@ -20,9 +20,13 @@ h6 {
   margin-bottom: 20px;
 }
 
-/* FormBuilder.css */
 .form-container {
-  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: calc(70% - 32px);
+  margin: 20px auto; /* Establece el margen superior e inferior a 20px y los laterales automáticos para centrar horizontalmente */
   text-align: center;
   padding: 20px;
   border: 1px solid #ccc;
@@ -37,6 +41,8 @@ h6 {
   text-align: center;
   border-radius: 10px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  width: 90%; /* Puedes ajustar el ancho según tus preferencias */
+  margin: 0 auto; /* Establece márgenes automáticos para centrar horizontalmente */
 }
 
 .input-group {
@@ -126,3 +132,4 @@ h6 {
   border-radius: 5px;
   text-align: center;
 }
+

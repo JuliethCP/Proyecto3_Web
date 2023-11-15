@@ -201,72 +201,72 @@ function ShowForm() {
   };
 
   return (
-<div className="containerSF">
-  {selectedForm ? (
-    <div className="form-container">
-      <h1 className="form-title">{selectedForm.data.titulo}</h1>
-      <p className="form-description">{selectedForm.data.descripcion}</p>
-      <p className="form-link">{selectedForm.data.link}</p>
+    <div className="containerSF">
+      {selectedForm ? (
+        <div className="form-container">
+          <h1 className="form-title">{selectedForm.data.titulo}</h1>
+          <p className="form-description">{selectedForm.data.descripcion}</p>
+          <p className="form-link">{selectedForm.data.link}</p>
 
-      {selectedForm.data.preguntas ? (
-        selectedForm.data.preguntas.map((pregunta) => (
-          <div key={pregunta.id} className="form-question">
-            <h3>{pregunta.data.pregunta}</h3>
-            {pregunta.tipoRespuesta === "TipoTexto" ? (
-              <input
-                type="text"
-                className="text-input"
-                value={formResponses[pregunta.id] || ""}
-                onChange={(e) =>
-                  handleResponseChange(pregunta.id, e.target.value)
-                }
-              />
-            ) : pregunta.tipoRespuesta === "TipoNumero" ? (
-              <input
-                type="number"
-                className="number-input"
-                value={formResponses[pregunta.id] || ""}
-                onChange={(e) =>
-                  handleResponseChange(pregunta.id, e.target.value)
-                }
-              />
-            ) : pregunta.tipoRespuesta === 'TipoComboBox' ? (
-              <select
-                className="combo-box"
-                value={formResponses[pregunta.id] || ''}
-                onChange={(e) => handleResponseChange(pregunta.id, e.target.value)}
-              >
-                <option value="">Selecciona una opción</option>
-                {opcionesEncontradas.map((opcion, index) => (
-                  <option key={index} value={opcion}>
-                    {opcion}
-                  </option>
-                ))}
-              </select>
-            ) : null}
-            {pregunta.dato ? (
-              <p className="example-value">Valor ejemplo de la respuesta: {pregunta.dato}</p>
-            ) : null}
-          </div>
-        ))
-      ) : null}
+          {selectedForm.data.preguntas ? (
+            selectedForm.data.preguntas.map((pregunta) => (
+              <div key={pregunta.id} className="form-question">
+                <h3>{pregunta.data.pregunta}</h3>
+                {pregunta.tipoRespuesta === "TipoTexto" ? (
+                  <input
+                    type="text"
+                    className="text-input"
+                    value={formResponses[pregunta.id] || ""}
+                    onChange={(e) =>
+                      handleResponseChange(pregunta.id, e.target.value)
+                    }
+                  />
+                ) : pregunta.tipoRespuesta === "TipoNumero" ? (
+                  <input
+                    type="number"
+                    className="number-input"
+                    value={formResponses[pregunta.id] || ""}
+                    onChange={(e) =>
+                      handleResponseChange(pregunta.id, e.target.value)
+                    }
+                  />
+                ) : pregunta.tipoRespuesta === 'TipoComboBox' ? (
+                  <select
+                    className="combo-box"
+                    value={formResponses[pregunta.id] || ''}
+                    onChange={(e) => handleResponseChange(pregunta.id, e.target.value)}
+                  >
+                    <option value="">Selecciona una opción</option>
+                    {opcionesEncontradas.map((opcion, index) => (
+                      <option key={index} value={opcion}>
+                        {opcion}
+                      </option>
+                    ))}
+                  </select>
+                ) : null}
+                {pregunta.dato ? (
+                  <p className="example-value">Valor ejemplo de la respuesta: {pregunta.dato}</p>
+                ) : null}
+              </div>
+            ))
+          ) : null}
 
-      <Button className="submit-button" variant="dark" onClick={submitResponses}>Send response</Button>
-    </div>
+          <Button className="submit-button" variant="dark" onClick={submitResponses}>Send response</Button>
+        </div>
       ) : (
         <div>
           <h1>Select a form to respond</h1>
           <div className="card-container">
-                {formList.map((form) => (
-                    <div key={form.id} className="card">
-                        <img src={img} alt={form.data.titulo} />
-                        <div className="card-content">
-                            <h3>{form.data.titulo}</h3>
-                            <Button variant="outline-dark" onClick={() => selectForm(form.id)}>View responses</Button>
-                        </div>
-                    </div>
-                ))}
-            </div>
+            {formList.map((form) => (
+              <div key={form.id} className="card">
+                <img src={img} alt={form.data.titulo} />
+                <div className="card-content">
+                  <h3>{form.data.titulo}</h3>
+                  <Button variant="outline-dark" onClick={() => selectForm(form.id)}>View responses</Button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

@@ -12,9 +12,8 @@ function App() {
         <Navbar />
         <Switch>
           <Route path="/formBuilder" component={FormBuilder} />
-          <Route path="/responses" component={ShowResponses} /> 
-          <Route path="/showForm/:formId" component={ShowForm}  exact>
-           
+          <Route path="/responses/:formId" component={ShowResponses} /> 
+          <Route path="/showForm/:formId" component={ShowForm} exact>
           </Route>
         </Switch>
       </Router>

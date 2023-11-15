@@ -32,7 +32,7 @@ function Navbar() {
               </a>
             </li>
             <li className="nav-item mx-2">
-              <a className="nav-link custom-link" href="/responses">
+              <a className="nav-link custom-link" href="/responses/:formId">
                 Answers
               </a>     
             </li>

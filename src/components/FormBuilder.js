@@ -463,7 +463,7 @@ const isFormValid = () => {
                       <Button
                         variant="outline-danger"
                         className="btn-block"
-                        style={{ marginRight: '-5px', marginBottom: '5px' }}
+                        style={{ marginRight: '-5px' }}
                         onClick={() => handleRemoveOption(question.id, index)}
                       >
                         Remove Option
@@ -472,6 +472,8 @@ const isFormValid = () => {
                   ))}
                   <Button
                     variant="outline-dark"
+                    className="btn-block"
+                    style={{ marginTop: '1%' }}
                     onClick={() => handleAddOption(question.id)}
                   >
                     Add Option
@@ -479,7 +481,7 @@ const isFormValid = () => {
                 </div>
               )}
 
-              {question.type === "table" && (
+               {question.type === "table" && (
               <div>
                 <h4>Table Question</h4>
                 <input
@@ -491,34 +493,36 @@ const isFormValid = () => {
                     handleQuestionChange(question.id, e.target.value)
                   }
                 />
-                  <table className="table">
-                  <tbody>
-                    {[...Array(question.tableRows)].map((_, rowIndex) => (
-                      <tr key={rowIndex}>
-                        {[...Array(question.tableColumns)].map((_, colIndex) => (
-                          <td key={colIndex}>
-                            <input
-                              type="text"
-                              className="custom-table-input"
-                              placeholder={`Row ${rowIndex + 1}, Column ${colIndex + 1}`}
-                              value={question.tableData[rowIndex][colIndex]}
-                              onChange={(e) => {
-                                const newData = question.tableData.map((row, rIndex) =>
-                                  rIndex === rowIndex
-                                    ? row.map((cell, cIndex) =>
-                                        cIndex === colIndex ? e.target.value : cell
-                                      )
-                                    : row
-                                );
-                                handleTableDataChange(question.id, newData);
-                              }}
-                            />
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                  <div className="table-container">
+      <table className="table">
+        <tbody>
+          {[...Array(question.tableRows)].map((_, rowIndex) => (
+            <tr key={rowIndex}>
+              {[...Array(question.tableColumns)].map((_, colIndex) => (
+                <td key={colIndex}>
+                  <input
+                    type="text"
+                    className="custom-input-table-option"
+                    placeholder={`Row ${rowIndex + 1}, Column ${colIndex + 1}`}
+                    value={question.tableData[rowIndex][colIndex]}
+                    onChange={(e) => {
+                      const newData = question.tableData.map((row, rIndex) =>
+                        rIndex === rowIndex
+                          ? row.map((cell, cIndex) =>
+                              cIndex === colIndex ? e.target.value : cell
+                            )
+                          : row
+                      );
+                      handleTableDataChange(question.id, newData);
+                    }}
+                  />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
                 <div style={{ marginTop: '15px' }}>
                   <Button
                     variant="outline-dark"

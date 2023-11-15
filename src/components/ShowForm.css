@@ -1,121 +1,131 @@
-/* ShowForm.css */
+.containerSF{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
 
-.containerSF {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+.form-container {
   max-width: 800px;
-  margin: auto;
-  padding: 20px;
-}
-
-.card {
+  padding: 2%;
+  width: 75%;
   background-color: #fff;
-  border: 1px solid #ddd;
   border-radius: 8px;
-  margin-bottom: 20px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.card-icon {
-  margin-bottom: 15px;
+/* Título de formulario */
+.form-title {
+  font-size: 2em;
+  color: #333;
 }
 
-.card-content {
-  text-align: center;
+/* Descripción del formulario */
+.form-description {
+  font-size: 1.2em;
+  color: #555;
 }
 
-h1 {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-p {
-  font-size: 16px;
-  margin-bottom: 20px;
+/* Enlace del formulario */
+.form-link {
+  color: #007bff;
 }
 
 h3 {
   font-size: 18px;
-  margin-bottom: 10px;
+  font-weight: bold;
+  margin-top: 10px;
 }
 
-input {
+/* Estilo para el input de texto */
+.text-input {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  box-sizing: border-box;
+  padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
-
-.submit-button {
-  background-color: #4caf50;
-  color: white;
-  padding: 10px 15px;
-  border: none;
+/* Estilo para el input de número */
+.number-input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
   border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.submit-button:hover {
-  background-color: #45a049;
+/* Estilo para el select (combo box) */
+.combo-box {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-.form-list {
-  list-style: none;
-  padding: 0;
+/* Valor de ejemplo */
+.example-value {
+  color: #888;
 }
 
+/* Botón de envío de respuestas */
+.submit-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1.2em;
+}
+
+/* Estilos para la sección de selección de formularios */
 .card-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-around;
 }
 
 .card {
-  background-color: #fff;
-  width: calc(95% - 32px);
+  width: 230px;
+  margin: 15px;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  margin: 10px;
-  min-width: 200px;
+  overflow: hidden;
+  background-color: #fff;
+  transition: transform 0.2s;
 }
 
-button {
-  background-color: transparent;
-  color: black;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
+.card:hover {
+  transform: scale(1.05);
 }
 
-
-.form-card {
-  text-align: center;
+.card img {
+  width: 90%;
+  height: 90%;
+  object-fit: cover;
   margin: 10px;
 }
 
-.form-button {
-  background-color: #3498db;
-  color: white;
+.card-content {
   padding: 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  width: 100%;
-  transition: background-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
 }
 
-.form-button:hover {
-  background-color: #2980b9;
+.card-content h3 {
+  font-size: 1.2em;
+  font-weight: bold;
+  justify-content: center;
+}
+
+.card-content button {
+  width: 60%;
+  padding: 5px;
+}
+
+/* Estilos generales del cuerpo de la página */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #f4f4f4;
 }

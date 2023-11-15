@@ -25,7 +25,7 @@ h6 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: calc(70% - 32px);
+  width: calc(100% - 32px);
   margin: 20px auto; /* Establece el margen superior e inferior a 20px y los laterales automáticos para centrar horizontalmente */
   text-align: center;
   padding: 20px;
@@ -73,7 +73,7 @@ h6 {
 /* input pregunta */
 .custom-input {
   margin-top: 1%;
-  width: calc(50% - 32px);
+  width: calc(85% - 32px);
   display: inline-block;
   text-align: center;
   vertical-align: middle;
@@ -86,7 +86,7 @@ h6 {
 /* tipo dato texto y numero */
 .custom-data-input {
   margin-top: 1%;
-  width: calc(50% - 32px);
+  width: calc(75% - 32px);
   display: inline-block;
   vertical-align: middle;
   margin-left: 10px;
@@ -105,9 +105,8 @@ h6 {
 }
 
 .custom-option-input {
-  width: calc(38% - 32px);
-  margin-top: 1%;
-  margin-bottom: 0.5%;
+  width: calc(50% - 32px);  margin-top: 1%;
+  margin-bottom: 1%;
   flex: 1;
   margin-right: 10px;
   padding: 8px;
@@ -120,7 +119,6 @@ h6 {
 .custom-table-input::placeholder {
   text-align: center;
 }
-
 .custom-input-table {
   margin-top: 1%;
   width: calc(85% - 32px);

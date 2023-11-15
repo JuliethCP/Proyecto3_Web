@@ -24,12 +24,12 @@ function Navbar() {
           <ul className="navbar-nav mx-auto">
             <li className="nav-item mx-3">
               <a className="nav-link custom-link" href="/formBuilder">
-                Preguntas
+                Questions
               </a>
             </li>
             <li className="nav-item mx-3">
               <a className="nav-link custom-link" href="/showForm/:formId">
-                Respuestas
+                Answers
               </a>
             </li>
           </ul>

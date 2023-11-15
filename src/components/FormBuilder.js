@@ -5,6 +5,8 @@ import { v4 as uuidv4 } from "uuid";
 import { Button, Dropdown } from "react-bootstrap";
 import { collection, addDoc } from "firebase/firestore";
 import db from "../firebase";
+import Swal from "sweetalert2";  // Importa SweetAlert2
+
 
 function FormBuilder() {
   const [questions, setQuestions] = useState([]);
@@ -100,6 +102,12 @@ const isFormValid = () => {
     setQuestions(updatedQuestions);
   };
 
+  const handleRemoveQuestion = (questionId) => {
+  const updatedQuestions = questions.filter((question) => question.id !== questionId);
+  setQuestions(updatedQuestions);
+};
+
+
   const handleTableDataChange = (questionId, newData) => {
     const updatedQuestions = questions.map((question) =>
       question.id === questionId ? { ...question, tableData: newData } : question
@@ -144,6 +152,14 @@ const isFormValid = () => {
     setQuestions(updatedQuestions);
   };
 
+  const resetForm = () => {
+    // Resetear todos los estados a sus valores iniciales
+    setQuestions([]);
+    setTitleValue("");
+    setDescriptionValue("");
+    setResponseTypeSelected(false);
+  };
+
   const handleRemoveRow = (questionId) => {
     const updatedQuestions = questions.map((question) =>
       question.id === questionId ? { ...question, tableRows: Math.max(1, question.tableRows - 1) } : question
@@ -163,6 +179,7 @@ const isFormValid = () => {
     if (isFormValid() && window.confirm("Are you sure you want to save the form?")) {
       scanAndSave();
       saveFormData();
+      resetForm();
     } else {
       alert("Please add at least one question and provide a valid title before saving.");
     }
@@ -254,9 +271,22 @@ const isFormValid = () => {
         }
       }
   
-      console.log("Formulario guardado correctamente en Firestore.");
+      console.log("Form saved successfully in Firestore.");
+
+      // Muestra un mensaje de éxito utilizando SweetAlert2
+      Swal.fire({
+        icon: "success",
+        title: "Saved form",
+        text: "The form was successfully saved to Firestore.",
+      });
     } catch (error) {
-      console.error("Error al guardar el formulario:", error);
+      console.error("Error saving form:", error);
+      // Muestra un mensaje de error utilizando SweetAlert2
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "There was an error trying to save the form.",
+      });
     }
   };
   
@@ -288,31 +318,35 @@ const isFormValid = () => {
       <div className="container">
         {/* Espacio para el título */}
         <div className="row">
-          <div className="col-md-12">
-            <h2>Form Title</h2>
-            <input
-              type="text"
-              className="form-control"
-              value={titleValue}
-              onChange={(e) => handleTitleChange(e.target.value)}
-              placeholder="Form Title"
-            />
-          </div>
-          <div className="col-md-12">
-            <h6>Form Description</h6>
-            <input
-              type="text"
-              className="form-control"
-              value={descriptionValue}
-              onChange={(e) => handleDescriptionChange(e.target.value)}
-              placeholder="Form Description Here"
-            />
-          </div>
-        </div>
+        <div className="col-md-12">
+    <h2>Form Title</h2>
+    <input
+      type="text"
+      className="form-control"
+      value={titleValue}
+      onChange={(e) => handleTitleChange(e.target.value)}
+      placeholder="Form Title"
+    />
+    {!isTitleValid() && (
+      <div style={{ color: "black", marginBottom: '5px', marginTop: '-5px'}}>
+      </div>
+    )}
+  </div>
+  <div className="col-md-12">
+    <h6>Form Description</h6>
+    <input
+      type="text"
+      className="form-control"
+      value={descriptionValue}
+      onChange={(e) => handleDescriptionChange(e.target.value)}
+      placeholder="Form Description Here"
+    />
+  </div>
+</div>
 
         {/* Controles para agregar preguntas */}
         <div className="row mt-3">
-          <div className="col-md-6">
+          <div className="col-md-6 mb-3">
             <Button variant="dark" onClick={addQuestion} disabled={!responseTypeSelected}>
               Add Question
             </Button>
@@ -342,11 +376,18 @@ const isFormValid = () => {
 
         {/* Preguntas y respuestas */}
         <div className="row mt-3">
-          {questions.map((question) => (
-            <div
-              key={question.id}
-              className="col-md-12 mb-3 question-container"
-            >
+        {questions.map((question) => (
+  <div key={question.id} className="col-md-12 mb-3 question-container">
+    <div style={{ textAlign: 'right' }}>
+      <Button
+      className="mb-2"
+        variant="outline-danger"
+        size="block"
+        onClick={() => handleRemoveQuestion(question.id)}
+      >
+        X
+      </Button>
+    </div>
               {question.type === "text" && (
                 <div>
                   <h4>Text Question</h4>
@@ -450,7 +491,7 @@ const isFormValid = () => {
                     handleQuestionChange(question.id, e.target.value)
                   }
                 />
-                <table className="table">
+                  <table className="table">
                   <tbody>
                     {[...Array(question.tableRows)].map((_, rowIndex) => (
                       <tr key={rowIndex}>
@@ -517,15 +558,13 @@ const isFormValid = () => {
             </div>
           ))}
         </div>
+        {/* Botón para guardar el formulario */}
         <div className="row mt-3">
-        <div className="col-md-12">
-          <Button variant="dark" onClick={() => {
-            scanAndSave();
-            saveFormData();
-          }}>
-            Save Form
-          </Button>
-        </div>
+          <div className="col-md-12">
+            <Button variant="dark" onClick={confirmAndSave}>
+              Save Form
+            </Button>
+          </div>
       </div>
       </div>
     </div>

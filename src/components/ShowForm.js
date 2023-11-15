@@ -253,18 +253,18 @@ function ShowForm() {
           <button onClick={submitResponses}>Enviar Respuestas</button>
         </div>
       ) : (
-        <div>
-          <h1>Selecciona un formulario para responder:</h1>
-          <ul>
-            {formList.map((form) => (
-              <li key={form.id}>
-                <button onClick={() => selectForm(form.id)}>
-                  {form.data.titulo}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <div className="form-container">
+      <h1>Select a form to respond</h1>
+      <div className="card-container">
+        {formList.map((form) => (
+          <div key={form.id} className="card">
+            <button onClick={() => selectForm(form.id)}>
+              {form.data.titulo}
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
       )}
     </div>
   );

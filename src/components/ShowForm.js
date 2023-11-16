@@ -286,7 +286,7 @@ function ShowForm() {
                         <img src={img} alt={form.data.titulo} />
                         <div className="card-content">
                             <h3>{form.data.titulo}</h3>
-                            <Button variant="outline-dark" onClick={() => selectForm(form.id)}>View responses</Button>
+                            <Button variant="outline-dark" onClick={() => selectForm(form.id)}>Answer the Form</Button>
                         </div>
                     </div>
                 ))}

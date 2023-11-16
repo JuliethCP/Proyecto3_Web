@@ -115,19 +115,6 @@ const isFormValid = () => {
     setQuestions(updatedQuestions);
   };
 
-  const handleTableRowsChange = (questionId, newTableRows) => {
-    const updatedQuestions = questions.map((question) =>
-      question.id === questionId ? { ...question, tableRows: newTableRows } : question
-    );
-    setQuestions(updatedQuestions);
-  };
-
-  const handleTableColumnsChange = (questionId, newTableColumns) => {
-    const updatedQuestions = questions.map((question) =>
-      question.id === questionId ? { ...question, tableColumns: newTableColumns } : question
-    );
-    setQuestions(updatedQuestions);
-  };
 
   const handleAddRow = (questionId) => {
     const updatedQuestions = questions.map((question) =>
@@ -192,6 +179,7 @@ const isFormValid = () => {
       await addDoc(collection(db, "Form"), {
         id: formId,
         titulo: titleValue,
+        descripcion: descriptionValue,
         link: "tu_valor_de_link",
       });
   

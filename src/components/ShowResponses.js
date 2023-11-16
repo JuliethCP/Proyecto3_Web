@@ -44,6 +44,7 @@ const ShowResponses = () => {
 
     useEffect(() => {
         const loadFormData = async () => {
+        
             if (formId) {
                 try {
                     const formDocRef = doc(db, "Form", formId);
@@ -105,13 +106,14 @@ const ShowResponses = () => {
                                                 if (tipoRespuesta === "TipoComboBox") {
                                                     const opcionesQuery = query(collection(db, "Opciones"), where("idTipoCombobox", "==", tipoRespuestaId));
                                                     const opcionesSnapshot = await getDocs(opcionesQuery);
-
+                                                
                                                     if (!opcionesSnapshot.empty) {
                                                         // Recorrer las opciones y guardarlas en el array
                                                         const nuevasOpciones = opcionesSnapshot.docs.map((opcionDoc) => opcionDoc.data().opcion);
+                                                        console.log("Opciones encontradas:", nuevasOpciones);
                                                         setOpcionesEncontradas(nuevasOpciones);
-                                                        console.log("Opciones encontradas:", opcionesEncontradas);
                                                     }
+                                                
                                                 } else {
                                                     dato = tipoSnapshot.docs[0].data().dato;
                                                 }
@@ -124,116 +126,119 @@ const ShowResponses = () => {
 
                                     if (tipoRespuestaId) {
                                         try {
-                                          const respuestasQuery = query(collection(db, "Respuestas"), where("idTipo", "==", tipoRespuestaId));
-                                          const respuestasSnapshot = await getDocs(respuestasQuery);
-                                      
-                                          if (!respuestasSnapshot.empty) {
-                                            const nuevasRespuestas = respuestasSnapshot.docs.map((respuestaDoc) => ({
-                                              id: respuestaDoc.id,
-                                              data: respuestaDoc.data(),
-                                            }));
-                                      
-                                            // Usamos una función de actualización para asegurarnos de que estamos acumulando las respuestas
-                                            setRespuestasEncontradas(prevRespuestas => [...prevRespuestas, ...nuevasRespuestas]);
-                                          } else {
-                                            console.log(`No se encontraron respuestas para el tipo de respuesta con ID ${tipoRespuestaId}`);
-                                          }
+                                            const respuestasQuery = query(collection(db, "Respuestas"), where("idTipo", "==", tipoRespuestaId));
+                                            const respuestasSnapshot = await getDocs(respuestasQuery);
+                                    
+                                            if (!respuestasSnapshot.empty) {
+                                                const nuevasRespuestas = respuestasSnapshot.docs.map((respuestaDoc) => ({
+                                                    id: respuestaDoc.id,
+                                                    data: respuestaDoc.data(),
+                                                }));
+                                    
+                                                // Usamos una función de actualización para asegurarnos de que estamos acumulando las respuestas
+                                                setRespuestasEncontradas(prevRespuestas => [...prevRespuestas, ...nuevasRespuestas]);
+                                            } else {
+                                                console.log(`No se encontraron respuestas para el tipo de respuesta con ID ${tipoRespuestaId}`);
+                                            }
                                         } catch (error) {
-                                          console.error(`Error al buscar respuestas para el tipo de respuesta con ID ${tipoRespuestaId}:`, error);
+                                            console.error(`Error al buscar respuestas para el tipo de respuesta con ID ${tipoRespuestaId}:`, error);
                                         }
-                                      }
-                    
-                                      return {
+                                    }
+
+                                    return {
                                         id: preguntasSnapshot.docs[0].id,
                                         data: preguntaData,
                                         tipoRespuesta: tipoRespuesta,
                                         dato: dato,
                                         tipoRespuestaId: tipoRespuestaId, // Almacenamos el id real
-                                      };
-                                    } else {
-                                      console.log(`No se encontró la pregunta con ID ${preguntaId}`);
-                                      return null;
-                                    }
-                                  } catch (error) {
-                                    console.error(`Error al recuperar la pregunta con ID ${preguntaId}:`, error);
+                                    };
+                                } else {
+                                    console.log(`No se encontró la pregunta con ID ${preguntaId}`);
                                     return null;
-                                  }
-                                });
-                    
-                                // Esperar a que todas las promesas se completen
-                                const preguntas = await Promise.all(preguntasPromises);
-                    
-                                console.log("Preguntas cargadas:", preguntas);
-                    
-                                formData.data.preguntas = preguntas.filter((pregunta) => pregunta !== null); // Filtrar preguntas nulas
-                                setSelectedForm(formData);
-                              } else {
-                                console.log(`No se encontró el formulario con ID ${formId}`);
-                              }
+                                }
                             } catch (error) {
-                              console.error("Error al recuperar el formulario:", error);
+                                console.error(`Error al recuperar la pregunta con ID ${preguntaId}:`, error);
+                                return null;
                             }
-                          }
-                        };
-                    
-                        loadFormData();
-                      }, [formId, opcionesEncontradas]);
-                    
+                        });
+
+                        // Esperar a que todas las promesas se completen
+                        const preguntas = await Promise.all(preguntasPromises);
+
+                        console.log("Preguntas cargadas:", preguntas);
+
+                        formData.data.preguntas = preguntas.filter((pregunta) => pregunta !== null); // Filtrar preguntas nulas
+                        setSelectedForm(formData);
+                        
+                      
+
+                    } else {
+                        console.log(`No se encontró el formulario con ID ${formId}`);
+                    }
+                } catch (error) {
+                    console.error("Error al recuperar el formulario:", error);
+                }
+            }
+        };
+
+        loadFormData();
+    }, [formId, opcionesEncontradas]);
 
 
-                      return (
-                        <div className="containerSF">
-                          {selectedForm ? (
-                            <div className="form-container">
-                              <h1 className="form-title">{selectedForm.data.titulo}</h1>
-                              <p className="form-description">{selectedForm.data.descripcion}</p>
-                              <p className="form-link">{selectedForm.data.link}</p>
-                      
-                              {selectedForm.data.preguntas ? (
-                                selectedForm.data.preguntas.map((pregunta) => {
-                                  // Encontrar respuestas asociadas a la pregunta actual
-                                  const respuestasParaPregunta = respuestasEncontradas.filter(
-                                    (respuesta) => respuesta.data.idTipo === pregunta.tipoRespuestaId
-                                  );
-                      
-                                  return (
-                                    <div key={pregunta.id} className="form-question">
-                                      <h3>{pregunta.data.pregunta}</h3>
-                      
-                                      {/* Mostrar respuestas asociadas */}
-                                      {respuestasParaPregunta.length > 0 ? (
+
+    return (
+        <div className="containerSF">
+            {selectedForm ? (
+                <div className="form-container">
+                    <h1 className="form-title">{selectedForm.data.titulo}</h1>
+                    <p className="form-description">{selectedForm.data.descripcion}</p>
+                    <p className="form-link">{selectedForm.data.link}</p>
+
+                    {selectedForm.data.preguntas ? (
+                        selectedForm.data.preguntas.map((pregunta) => {
+                            // Encontrar respuestas asociadas a la pregunta actual
+                            const respuestasParaPregunta = respuestasEncontradas.filter(
+                                (respuesta) => respuesta.data.idTipo === pregunta.tipoRespuestaId
+                            );
+
+                            return (
+                                <div key={pregunta.id} className="form-question">
+                                    <h3>{pregunta.data.pregunta}</h3>
+
+                                    {/* Mostrar respuestas asociadas */}
+                                    {respuestasParaPregunta.length > 0 ? (
                                         <ul>
-                                          {respuestasParaPregunta.map((respuesta) => (
-                                            <li key={respuesta.id}>{respuesta.data.respuesta}</li>
-                                          ))}
+                                            {respuestasParaPregunta.map((respuesta) => (
+                                                <li key={respuesta.id}>{respuesta.data.respuesta}</li>
+                                            ))}
                                         </ul>
-                                      ) : (
+                                    ) : (
                                         <p>No hay respuestas para esta pregunta.</p>
-                                      )}
-                                    </div>
-                                  );
-                                })
-                              ) : null}
+                                    )}
+                                </div>
+                            );
+                        })
+                    ) : null}
+                </div>
+            ) : (
+                <div>
+                    <h1>Select a form to respond</h1>
+                    <div className="card-container">
+                        {formList.map((form) => (
+                            <div key={form.id} className="card">
+                                <img src={img} alt={form.data.titulo} />
+                                <div className="card-content">
+                                    <h3>{form.data.titulo}</h3>
+                                    <Button variant="outline-dark" onClick={() => selectForm(form.id)}>View responses</Button>
+                                </div>
                             </div>
-                          ) : (
-                            <div>
-                              <h1>Select a form to respond</h1>
-                              <div className="card-container">
-                                {formList.map((form) => (
-                                  <div key={form.id} className="card">
-                                    <img src={img} alt={form.data.titulo} />
-                                    <div className="card-content">
-                                      <h3>{form.data.titulo}</h3>
-                                      <Button variant="outline-dark" onClick={() => selectForm(form.id)}>View responses</Button>
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      );
-                      
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+
 }
 
 export default ShowResponses;

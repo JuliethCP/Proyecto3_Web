@@ -63,7 +63,7 @@ function ShowForm() {
             // Obtener los detalles de las preguntas y sus tipos de respuesta
             const preguntasPromises = preguntaIds.map(async (preguntaId) => {
               console.log(`Recuperando pregunta con ID ${preguntaId}`);
-
+              
               try {
                 // Realizar la consulta directamente en la colección "Preguntas" por el atributo "id"
                 const preguntasQuery = query(collection(db, "Preguntas"), where("id", "==", preguntaId));
@@ -86,22 +86,22 @@ function ShowForm() {
                   if (!respuestaSnapshot.empty) {
                     tipoRespuestaId = respuestaSnapshot.docs[0].data().idRespuesta;
                     console.log("ID de respuesta encontrado:", tipoRespuestaId);
-
+                  
                     // Definir un array con los nombres de las colecciones a consultar
                     const colecciones = ["TipoTexto", "TipoNumero", "TipoComboBox"];
-
-
+                    
+                  
                     for (const tipoColeccion of colecciones) {
                       const tipoQuery = query(collection(db, tipoColeccion), where("id", "==", tipoRespuestaId));
                       const tipoSnapshot = await getDocs(tipoQuery);
-
+                    
                       if (!tipoSnapshot.empty) {
                         tipoRespuesta = tipoColeccion;
-
+                    
                         if (tipoRespuesta === "TipoComboBox") {
                           const opcionesQuery = query(collection(db, "Opciones"), where("idTipoCombobox", "==", tipoRespuestaId));
                           const opcionesSnapshot = await getDocs(opcionesQuery);
-
+                    
                           if (!opcionesSnapshot.empty) {
                             // Recorrer las opciones y guardarlas en el array
                             const nuevasOpciones = opcionesSnapshot.docs.map((opcionDoc) => opcionDoc.data().opcion);
@@ -111,9 +111,11 @@ function ShowForm() {
                         } else {
                           dato = tipoSnapshot.docs[0].data().dato;
                         }
+                    
                         break;
                       }
                     }
+                   
                   }
 
                   console.log("Tipo de respuesta:", tipoRespuesta);
@@ -201,72 +203,72 @@ function ShowForm() {
   };
 
   return (
-    <div className="containerSF">
-      {selectedForm ? (
-        <div className="form-container">
-          <h1 className="form-title">{selectedForm.data.titulo}</h1>
-          <p className="form-description">{selectedForm.data.descripcion}</p>
-          <p className="form-link">{selectedForm.data.link}</p>
+<div className="containerSF">
+  {selectedForm ? (
+    <div className="form-container">
+      <h1 className="form-title">{selectedForm.data.titulo}</h1>
+      <p className="form-description">{selectedForm.data.descripcion}</p>
+      <p className="form-link">{selectedForm.data.link}</p>
 
-          {selectedForm.data.preguntas ? (
-            selectedForm.data.preguntas.map((pregunta) => (
-              <div key={pregunta.id} className="form-question">
-                <h3>{pregunta.data.pregunta}</h3>
-                {pregunta.tipoRespuesta === "TipoTexto" ? (
-                  <input
-                    type="text"
-                    className="text-input"
-                    value={formResponses[pregunta.id] || ""}
-                    onChange={(e) =>
-                      handleResponseChange(pregunta.id, e.target.value)
-                    }
-                  />
-                ) : pregunta.tipoRespuesta === "TipoNumero" ? (
-                  <input
-                    type="number"
-                    className="number-input"
-                    value={formResponses[pregunta.id] || ""}
-                    onChange={(e) =>
-                      handleResponseChange(pregunta.id, e.target.value)
-                    }
-                  />
-                ) : pregunta.tipoRespuesta === 'TipoComboBox' ? (
-                  <select
-                    className="combo-box"
-                    value={formResponses[pregunta.id] || ''}
-                    onChange={(e) => handleResponseChange(pregunta.id, e.target.value)}
-                  >
-                    <option value="">Selecciona una opción</option>
-                    {opcionesEncontradas.map((opcion, index) => (
-                      <option key={index} value={opcion}>
-                        {opcion}
-                      </option>
-                    ))}
-                  </select>
-                ) : null}
-                {pregunta.dato ? (
-                  <p className="example-value">Valor ejemplo de la respuesta: {pregunta.dato}</p>
-                ) : null}
-              </div>
-            ))
-          ) : null}
+      {selectedForm.data.preguntas ? (
+        selectedForm.data.preguntas.map((pregunta) => (
+          <div key={pregunta.id} className="form-question">
+            <h3>{pregunta.data.pregunta}</h3>
+            {pregunta.tipoRespuesta === "TipoTexto" ? (
+              <input
+                type="text"
+                className="text-input"
+                value={formResponses[pregunta.id] || ""}
+                onChange={(e) =>
+                  handleResponseChange(pregunta.id, e.target.value)
+                }
+              />
+            ) : pregunta.tipoRespuesta === "TipoNumero" ? (
+              <input
+                type="number"
+                className="number-input"
+                value={formResponses[pregunta.id] || ""}
+                onChange={(e) =>
+                  handleResponseChange(pregunta.id, e.target.value)
+                }
+              />
+            ) : pregunta.tipoRespuesta === 'TipoComboBox' ? (
+              <select
+                className="combo-box"
+                value={formResponses[pregunta.id] || ''}
+                onChange={(e) => handleResponseChange(pregunta.id, e.target.value)}
+              >
+                <option value="">Selecciona una opción</option>
+                {opcionesEncontradas.map((opcion, index) => (
+                  <option key={index} value={opcion}>
+                    {opcion}
+                  </option>
+                ))}
+              </select>
+            ) : null}
+            {pregunta.dato ? (
+              <p className="example-value">Valor ejemplo de la respuesta: {pregunta.dato}</p>
+            ) : null}
+          </div>
+        ))
+      ) : null}
 
-          <Button className="submit-button" variant="dark" onClick={submitResponses}>Send response</Button>
-        </div>
+      <Button className="submit-button" variant="dark" onClick={submitResponses}>Send response</Button>
+    </div>
       ) : (
         <div>
           <h1>Select a form to respond</h1>
           <div className="card-container">
-            {formList.map((form) => (
-              <div key={form.id} className="card">
-                <img src={img} alt={form.data.titulo} />
-                <div className="card-content">
-                  <h3>{form.data.titulo}</h3>
-                  <Button variant="outline-dark" onClick={() => selectForm(form.id)}>View responses</Button>
-                </div>
-              </div>
-            ))}
-          </div>
+                {formList.map((form) => (
+                    <div key={form.id} className="card">
+                        <img src={img} alt={form.data.titulo} />
+                        <div className="card-content">
+                            <h3>{form.data.titulo}</h3>
+                            <Button variant="outline-dark" onClick={() => selectForm(form.id)}>View responses</Button>
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
       )}
     </div>

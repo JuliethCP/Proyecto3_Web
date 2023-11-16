@@ -7,15 +7,16 @@ import ShowResponses from './components/ShowResponses';
 
 function HomePage() {
   return (
-    <div className="home-container" >
-
-      <h1>Bienvenido a la Página Principal</h1>
-      <h2>Usa la navbar para navegar en la aplicación</h2>
-      <ul>
-        <li><h3>En Forms puedes encontrar los formularios disponibles para responder o compartir</h3></li>
-        <li><h3>En Create Form puedes crear los formularios</h3></li>
-        <li><h3>En Answers puedes encontrar las respuestas a cada form que sea elegido</h3></li>
-      </ul>
+    <div className="page-container">
+      <div className="home-container">
+        <h1>Bienvenido a la Página Principal</h1>
+        <h2>Usa la navbar para navegar en la aplicación</h2>
+        <ul>
+          <li><h3>En Forms puedes encontrar los formularios disponibles para responder o compartir</h3></li>
+          <li><h3>En Create Form puedes crear los formularios</h3></li>
+          <li><h3>En Answers puedes encontrar las respuestas a cada form que sea elegido</h3></li>
+        </ul>
+      </div>
     </div>
   );
 }

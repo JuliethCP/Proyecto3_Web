@@ -7,6 +7,7 @@ import db from "../firebase";
 import "./ShowForm.css";
 import img from "../assets/iconForm.png"
 
+
 function ShowForm() {
   const { formId } = useParams();
   const [formResponses, setFormResponses] = useState({});
@@ -14,6 +15,11 @@ function ShowForm() {
   const [selectedForm, setSelectedForm] = useState(null);
   const history = useHistory();
   const [opcionesEncontradas, setOpcionesEncontradas] = useState([]);
+
+  const generateUniqueLink = () => {
+    const currentUrl = window.location.origin;
+    return `${currentUrl}/showForm/${formId}`;
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,6 +58,7 @@ function ShowForm() {
             };
 
             console.log("Formulario seleccionado:", formData);
+
 
             // Obtener preguntas asociadas al formulario a través de Form_Preguntas
             const formPreguntasQuery = query(collection(db, "Form_Preguntas"), where("idForm", "==", formData.data.id));
@@ -203,12 +210,11 @@ function ShowForm() {
   };
 
   return (
-<div className="containerSF">
-  {selectedForm ? (
-    <div className="form-container">
-      <h1 className="form-title">{selectedForm.data.titulo}</h1>
-      <p className="form-description">{selectedForm.data.descripcion}</p>
-      <p className="form-link">{selectedForm.data.link}</p>
+    <div className="containerSF">
+      {selectedForm ? (
+        <div className="form-container">
+          <h1 className="form-title">{selectedForm.data.titulo}</h1>
+          <p className="form-description">{selectedForm.data.descripcion}</p>
 
       {selectedForm.data.preguntas ? (
         selectedForm.data.preguntas.map((pregunta) => (
@@ -253,8 +259,24 @@ function ShowForm() {
         ))
       ) : null}
 
-      <Button className="submit-button" variant="dark" onClick={submitResponses}>Send response</Button>
-    </div>
+          <Button className="submit-button" variant="dark" onClick={submitResponses}>Send response</Button>
+          <Button
+  className="generate-link-button btn-lg mt-3"
+  variant="primary"
+  onClick={() => {
+    const link = generateUniqueLink();
+    navigator.clipboard.writeText(link)
+      .then(() => {
+        alert("Link copied to clipboard!");
+      })
+      .catch((error) => {
+        console.error("Error copying link to clipboard:", error);
+      });
+  }}
+>
+  Generate Link
+</Button>
+        </div>
       ) : (
         <div>
           <h1>Select a form to respond</h1>
